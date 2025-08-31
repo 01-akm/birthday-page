@@ -1,0 +1,111 @@
+  body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a202c;
+            overflow: hidden; /* Hide scrollbars */
+        }
+        .font-handwriting {
+            font-family: 'Lobster', cursive;
+        }
+
+        /* Animation Keyframes */
+        @keyframes dropIn {
+            from { transform: translateY(-100px) scale(0.8); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .animate-drop-in {
+            animation: dropIn 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 1.5s ease-out 0.5s forwards;
+        }
+
+        /* Sparkle styles */
+        .sparkle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background-color: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: sparkle-effect 1.5s ease-out forwards;
+            box-shadow: 0 0 10px #ffd700, 0 0 20px #fff;
+        }
+
+        @keyframes sparkle-effect {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: var(--sparkle-transform);
+                opacity: 0;
+            }
+        }
+        
+        /* Sparkling Ribbon styles */
+        .ribbon-particle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 40px;
+            background-color: #e91e63;
+            pointer-events: none;
+            opacity: 0;
+            animation: fly-out 2.5s ease-out forwards;
+            border-radius: 4px;
+            box-shadow: 0 0 8px currentColor, 0 0 16px white;
+        }
+
+        @keyframes fly-out {
+            0% {
+                transform: translate(-50%, -50%) rotate(var(--initial-rotate)) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: var(--ribbon-transform);
+                opacity: 0;
+            }
+        }
+        
+        /* Mute Button Style */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        #mute-btn:hover { background-color: rgba(0,0,0,0.7); }
+        #mute-btn svg { stroke: white; }
+
+        /* Countdown Style */
+        #countdown {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            animation: pulse 1s infinite;
+            transition: opacity 0.5s ease-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        /* Start Screen Style */
+        #start-screen {
+            transition: opacity 0.5s ease-out;
+        }
