@@ -34,6 +34,22 @@
         }
         #message-modal, #share-modal { transition: opacity 0.3s ease; }
         #modal-content, #share-modal-content { transition: transform 0.3s ease; }
+
+        /* Mute Button Style */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body class="bg-[#1a202c] text-white flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
@@ -89,6 +105,14 @@
         </div>
     </div>
 
+    <!-- Audio player and Mute Button -->
+    <audio id="background-music" loop src="music.mp3"></audio>
+    <div id="mute-btn">
+        <!-- Speaker Icon -->
+        <svg id="speaker-icon" xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <!-- Mute Icon -->
+        <svg id="mute-icon" xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+    </div>
 
     <script>
         // --- Get All Elements ---
@@ -179,7 +203,6 @@
 
             shareCardPreview.textContent = formattedCard;
 
-            // Hide or show the native share button based on browser support
             if (navigator.share) {
                 shareModalShareBtn.classList.remove('hidden');
             } else {
@@ -215,7 +238,6 @@
             });
         });
 
-
         // --- Event Listeners ---
         addMessageBtn.addEventListener('click', () => {
             messageInput.focus();
@@ -226,15 +248,68 @@
         
         startOverBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Switched to a custom styled confirm box later if needed, for now this is fine.
             if (confirm('Are you sure you want to start over? This will delete all saved messages.')) {
                 localStorage.removeItem(STORAGE_KEY);
                 window.location.href = "/"; // Go to the first page (index.html)
             }
         });
+        
+        // --- CONTINUOUS MUSIC SCRIPT ---
+        const audio = document.getElementById('background-music');
+        const muteBtn = document.getElementById('mute-btn');
+        const speakerIcon = document.getElementById('speaker-icon');
+        const muteIcon = document.getElementById('mute-icon');
 
-        // Load existing messages when the page starts
+        function saveMusicState() {
+            localStorage.setItem('musicTime', audio.currentTime);
+            localStorage.setItem('musicPaused', audio.muted);
+            localStorage.setItem('musicPlaying', !audio.paused);
+        }
+
+        function loadMusicState() {
+            const time = localStorage.getItem('musicTime');
+            const paused = localStorage.getItem('musicPaused') === 'true';
+            const playing = localStorage.getItem('musicPlaying') === 'true';
+            
+            if (time) {
+                audio.currentTime = parseFloat(time);
+            }
+            
+            audio.muted = paused;
+            updateMuteButton(paused);
+
+            if (playing && !paused) {
+                 audio.play().catch(e => console.log("Audio needs interaction to play."));
+            }
+        }
+        
+        function updateMuteButton(isMuted) {
+             if(isMuted) {
+                speakerIcon.classList.add('hidden');
+                muteIcon.classList.remove('hidden');
+             } else {
+                speakerIcon.classList.remove('hidden');
+                muteIcon.classList.add('hidden');
+             }
+        }
+        
+        muteBtn.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            if(audio.muted) {
+                audio.pause();
+            } else if (localStorage.getItem('musicPlaying') === 'true') {
+                audio.play().catch(e => console.log("Audio play failed after unmute"));
+            }
+            localStorage.setItem('musicPaused', audio.muted);
+            updateMuteButton(audio.muted);
+        });
+
+        window.addEventListener('beforeunload', saveMusicState);
+
+
+        // Load existing messages and music state when the page starts
         loadMessages();
+        loadMusicState();
     </script>
 </body>
 </html>
