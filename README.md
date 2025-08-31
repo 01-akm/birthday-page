@@ -74,3 +74,50 @@ The experience flows linearly, with each page leading to the next:
        { image: 'your_image_url_1.jpg', caption: 'Your first caption here!' },
        { image: 'your_image_url_2.jpg', caption: 'Your second caption here!' }
    ];
+
+### 🎵 Change Music
+
+1. Add your **`.mp3`** file.  
+2. Rename it to **`background-music.mp3`**.  
+3. Place it in the **project root folder**.  
+
+---
+
+## ⚡ Challenges We Faced
+
+### 🔇 Browser Auto-Play Restrictions
+* **Problem**: Browsers block audio from auto-playing.  
+* **Solution**: Added a **Start Screen** that requires user interaction before playback.  
+
+### 🎶 Continuous Music Across Pages
+* **Problem**: Music restarted every time a new page loaded.  
+* **Solution**: Used **localStorage** to save and resume playback state seamlessly.  
+
+### 📤 Sharing Across Devices
+* **Problem**: `navigator.share` only works on **HTTPS + mobile browsers**.  
+* **Solution**: Built a **Clipboard fallback** + a visual preview card.  
+
+---
+
+## 🤝 Contributing
+
+Want to make this birthday card even better?  
+
+1. **Fork** this repo  
+2. **Make your changes** (add animations, improve design, fix bugs, etc.)  
+3. **Submit a pull request** 🎉  
+
+---
+
+## 📜 License
+
+This project is open-source under the **MIT License**.  
+✅ You’re free to **use, modify, and share** it.  
+💖 Just spread the love and give credit where due!  
+---
+
+
+
+
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)  
+
