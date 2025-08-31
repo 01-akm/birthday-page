@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Final Word</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a202c;
+        }
+        .font-handwriting {
+            font-family: 'Lobster', cursive;
+        }
+        #messages-container p {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f472b6; /* Pink accent */
+            line-height: 1.7;
+            white-space: pre-wrap; /* Ensures line breaks are respected */
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+            animation: fadeInDown 0.6s ease-out forwards;
+        }
+        #message-modal, #share-modal { transition: opacity 0.3s ease; }
+        #modal-content, #share-modal-content { transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="bg-[#1a202c] text-white flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
+
+    <header class="text-center mb-8">
+        <h1 class="font-handwriting text-5xl md:text-7xl text-purple-400 drop-shadow-lg">A Final Word...</h1>
+        <p class="text-lg text-gray-400 mt-2">Create a collection of messages to share.</p>
+    </header>
+
+    <div id="messages-container" class="w-full max-w-2xl mb-8">
+        <!-- Messages will be dynamically added here -->
+    </div>
+
+    <!-- Controls Container -->
+    <div id="controls-container" class="text-center space-y-4">
+        <div class="flex flex-wrap justify-center gap-4">
+            <button id="add-message-btn" class="bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                Add a Message
+            </button>
+            <button id="share-btn" class="hidden bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105">
+                Share Messages
+            </button>
+        </div>
+        <a href="/" id="start-over-btn" class="hidden inline-block text-gray-400 hover:text-white transition-colors">
+            Start Over
+        </a>
+    </div>
+
+    <!-- Message Input Modal -->
+    <div id="message-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-[#2d3748] rounded-2xl shadow-2xl p-6 w-full max-w-lg transform scale-95 opacity-0">
+            <h2 class="text-2xl font-bold mb-4 text-pink-400">Your Message</h2>
+            <textarea id="message-input" class="w-full h-40 bg-[#1a202c] text-white p-3 rounded-lg border-2 border-gray-600 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-500 transition" placeholder="Type your heartfelt message here..."></textarea>
+            <div class="flex justify-end space-x-4 mt-4">
+                <button id="cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-5 rounded-full transition-colors">Cancel</button>
+                <button id="done-btn" class="bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 px-5 rounded-full transition-colors">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Share Card Modal -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="share-modal-content" class="bg-white text-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-lg transform scale-95 opacity-0">
+            <h2 class="text-2xl font-bold mb-4 text-pink-500 font-handwriting">Your Message Card</h2>
+            <div id="share-card-preview" class="bg-gray-100 p-4 rounded-lg mb-4 whitespace-pre-wrap font-mono text-sm max-h-60 overflow-y-auto">
+                <!-- Formatted card will be injected here -->
+            </div>
+            <div class="flex justify-end items-center flex-wrap gap-4 mt-4">
+                <button id="share-modal-close-btn" class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-5 rounded-full transition-colors">Close</button>
+                <button id="share-modal-copy-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-full transition-colors">Copy Text</button>
+                <button id="share-modal-share-btn" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-5 rounded-full transition-colors">Share</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Get All Elements ---
+        const addMessageBtn = document.getElementById('add-message-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const startOverBtn = document.getElementById('start-over-btn');
+        const messageModal = document.getElementById('message-modal');
+        const modalContent = document.getElementById('modal-content');
+        const messageInput = document.getElementById('message-input');
+        const doneBtn = document.getElementById('done-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const messagesContainer = document.getElementById('messages-container');
+        const shareModal = document.getElementById('share-modal');
+        const shareModalContent = document.getElementById('share-modal-content');
+        const shareCardPreview = document.getElementById('share-card-preview');
+        const shareModalCloseBtn = document.getElementById('share-modal-close-btn');
+        const shareModalCopyBtn = document.getElementById('share-modal-copy-btn');
+        const shareModalShareBtn = document.getElementById('share-modal-share-btn');
+        
+        const STORAGE_KEY = 'birthdayMessages';
+
+        // --- Modal Controls ---
+        function showModal(modal, content) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                content.style.transform = 'scale(1)';
+                content.style.opacity = '1';
+            }, 10);
+        }
+
+        function hideModal(modal, content) {
+            modal.style.opacity = '0';
+            content.style.transform = 'scale(0.95)';
+            content.style.opacity = '0';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Message Handling ---
+        function addMessageToDOM(messageText) {
+            const p = document.createElement('p');
+            p.textContent = messageText;
+            p.className = 'animate-fade-in-down';
+            messagesContainer.appendChild(p);
+        }
+        
+        function updateUI(messages) {
+            if (messages.length > 0) {
+                addMessageBtn.textContent = 'Add Another Message';
+                shareBtn.classList.remove('hidden');
+                startOverBtn.classList.remove('hidden');
+            }
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            messagesContainer.innerHTML = '';
+            messages.forEach(addMessageToDOM);
+            updateUI(messages);
+        }
+
+        doneBtn.addEventListener('click', () => {
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+                addMessageToDOM(messageText);
+                const messages = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                messages.push(messageText);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+                messageInput.value = '';
+                hideModal(messageModal, modalContent);
+                updateUI(messages);
+            }
+        });
+
+        // --- Share Functionality ---
+        function getFormattedCardText() {
+            const messages = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            if (messages.length === 0) return null;
+            const messageItems = messages.map(msg => `\n✨ ${msg}`).join('');
+            return `💌 A Special Message For You 💌\n--------------------------------------${messageItems}\n\n--------------------------------------\nSent from a special birthday page!`;
+        }
+
+        shareBtn.addEventListener('click', () => {
+            const formattedCard = getFormattedCardText();
+            if (!formattedCard) return;
+
+            shareCardPreview.textContent = formattedCard;
+
+            // Hide or show the native share button based on browser support
+            if (navigator.share) {
+                shareModalShareBtn.classList.remove('hidden');
+            } else {
+                shareModalShareBtn.classList.add('hidden');
+            }
+            
+            showModal(shareModal, shareModalContent);
+        });
+        
+        shareModalShareBtn.addEventListener('click', async () => {
+            const formattedCard = getFormattedCardText();
+             try {
+                await navigator.share({
+                    title: 'A Birthday Message',
+                    text: formattedCard,
+                });
+            } catch (err) {
+                console.error('Error sharing:', err);
+            }
+        });
+        
+        shareModalCopyBtn.addEventListener('click', () => {
+             const formattedCard = getFormattedCardText();
+             navigator.clipboard.writeText(formattedCard).then(() => {
+                const originalText = shareModalCopyBtn.textContent;
+                shareModalCopyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    shareModalCopyBtn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Could not copy messages.');
+            });
+        });
+
+
+        // --- Event Listeners ---
+        addMessageBtn.addEventListener('click', () => {
+            messageInput.focus();
+            showModal(messageModal, modalContent);
+        });
+        cancelBtn.addEventListener('click', () => hideModal(messageModal, modalContent));
+        shareModalCloseBtn.addEventListener('click', () => hideModal(shareModal, shareModalContent));
+        
+        startOverBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Switched to a custom styled confirm box later if needed, for now this is fine.
+            if (confirm('Are you sure you want to start over? This will delete all saved messages.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                window.location.href = "/"; // Go to the first page (index.html)
+            }
+        });
+
+        // Load existing messages when the page starts
+        loadMessages();
+    </script>
+</body>
+</html>
+
