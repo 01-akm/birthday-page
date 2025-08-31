@@ -17,7 +17,6 @@
             font-family: 'Lobster', cursive;
         }
 
-        /* Base styles for the image before animation */
         #memory-image {
             opacity: 0;
             transform: scale(1.1);
@@ -47,7 +46,6 @@
             100% { opacity: 1; }
         }
 
-        /* Animation classes to apply */
         .anim-ken-burns { animation: kenBurns 7s ease-in-out forwards; }
         .anim-slide-left { animation: slideFromLeft 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .anim-slide-right { animation: slideFromRight 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -62,7 +60,6 @@
             animation: captionUp 0.8s 0.5s ease-out forwards;
         }
         
-        /* === NEW Breathing Effect === */
         @keyframes breathingEffect {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -72,7 +69,6 @@
             animation: breathingEffect 8s ease-in-out infinite;
         }
         
-        /* Mute Button Style */
         #mute-btn {
             position: fixed;
             bottom: 20px;
@@ -96,54 +92,53 @@
         <p class="text-lg text-gray-400 mt-2">A few moments that I'll always cherish.</p>
     </header>
 
-    <div id="slideshow-container" class="relative w-full max-w-2xl aspect-[4/3] bg-gray-900/50 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden breathing-effect">
-        <img id="memory-image" src="" alt="Memory" class="absolute top-0 left-0 w-full h-full object-cover">
-        
-        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
-            <div id="caption-container" class="transform translate-y-full">
-                 <p id="memory-caption" class="text-center text-lg text-white drop-shadow-md"></p>
+    <div class="relative w-full max-w-2xl">
+        <div id="slideshow-container" class="relative w-full aspect-[4/3] bg-gray-900/50 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden breathing-effect">
+            <img id="memory-image" src="" alt="Memory" class="absolute top-0 left-0 w-full h-full object-cover">
+            
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
+                <div id="caption-container" class="transform translate-y-full">
+                     <p id="memory-caption" class="text-center text-lg text-white drop-shadow-md"></p>
+                </div>
             </div>
         </div>
+
+        <!-- Navigation Buttons -->
+        <button id="prev-btn" class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-4 bg-black/40 hover:bg-black/60 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 transform hover:scale-110 z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button id="next-btn" class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-4 bg-black/40 hover:bg-black/60 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 transform hover:scale-110 z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
     </div>
 
-    <div class="h-20"></div> <!-- Placeholder for spacing -->
+    <!-- Next Page Button (hidden initially) -->
+    <a href="phase3.html" id="next-page-btn" class="hidden opacity-0 mt-8 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-1000 transform hover:scale-105">
+        Read My Message &rarr;
+    </a>
     
     <!-- Audio player and Mute Button -->
-    <audio id="background-music" loop src="music.mp3"></audio>
+    <audio id="background-music" loop src="background-music-2.mp3"></audio>
     <div id="mute-btn">
-        <!-- Speaker Icon -->
         <svg id="speaker-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        <!-- Mute Icon -->
         <svg id="mute-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
     </div>
 
     <script>
         const memories = [
-            {
-                image: 'https://placehold.co/800x600/34d399/1a202c?text=Our+First+Trip',
-                caption: "Remember our first trip together? It was such a magical day!"
-            },
-            {
-                image: 'https://placehold.co/800x600/fbbf24/1a202c?text=That+Funny+Moment',
-                caption: "I'll never forget how much we laughed at this moment. Pure joy."
-            },
-            {
-                image: 'https://placehold.co/800x600/60a5fa/1a202c?text=Cozy+Nights',
-                caption: "Just a simple, cozy night in, but it meant the world to me."
-            },
-            {
-                image: 'https://placehold.co/800x600/c084fc/1a202c?text=Adventure+Time',
-                caption: "Exploring new places with you is my favorite kind of adventure."
-            },
-            {
-                image: 'https://placehold.co/800x600/f87171/1a202c?text=Your+Smile',
-                caption: "This is my favorite picture because of that incredible smile."
-            }
+            { image: 'https://placehold.co/800x600/34d399/1a202c?text=Our+First+Trip', caption: "Remember our first trip together? It was such a magical day!" },
+            { image: 'https://placehold.co/800x600/fbbf24/1a202c?text=That+Funny+Moment', caption: "I'll never forget how much we laughed at this moment. Pure joy." },
+            { image: 'https://placehold.co/800x600/60a5fa/1a202c?text=Cozy+Nights', caption: "Just a simple, cozy night in, but it meant the world to me." },
+            { image: 'https://placehold.co/800x600/c084fc/1a202c?text=Adventure+Time', caption: "Exploring new places with you is my favorite kind of adventure." },
+            { image: 'https://placehold.co/800x600/f87171/1a202c?text=Your+Smile', caption: "This is my favorite picture because of that incredible smile." }
         ];
 
         const memoryImage = document.getElementById('memory-image');
         const memoryCaption = document.getElementById('memory-caption');
         const captionContainer = document.getElementById('caption-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const nextPageBtn = document.getElementById('next-page-btn');
         
         let currentIndex = 0;
         let slideshowInterval;
@@ -152,30 +147,25 @@
         const animations = ['anim-ken-burns', 'anim-slide-left', 'anim-slide-right', 'anim-zoom-in', 'anim-fade-in'];
 
         function showMemory(index) {
-            // Remove all previous animation classes
             memoryImage.className = 'absolute top-0 left-0 w-full h-full object-cover';
-            void memoryImage.offsetWidth; // Trigger reflow to restart animation
+            void memoryImage.offsetWidth; 
 
-            // Add a new random animation
             const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
             memoryImage.classList.add(randomAnimation);
 
             memoryImage.src = memories[index].image;
             memoryCaption.textContent = memories[index].caption;
 
-            // Animate caption
             captionContainer.classList.remove('caption-animate');
-            void captionContainer.offsetWidth; // Trigger reflow
+            void captionContainer.offsetWidth; 
             captionContainer.classList.add('caption-animate');
 
-            // When the last slide is reached, set a timer to go to the next page
             if (index === memories.length - 1 && !hasCompletedCycle) {
                 hasCompletedCycle = true;
-                stopSlideshow(); // Stop auto-playing
-                // Wait for the slide duration then navigate
                 setTimeout(() => {
-                    window.location.href = 'phase3.html';
-                }, 7000); 
+                    nextPageBtn.classList.remove('hidden');
+                    setTimeout(() => nextPageBtn.style.opacity = '1', 50);
+                }, 2000); 
             }
         }
         
@@ -184,14 +174,29 @@
             showMemory(currentIndex);
         }
 
+        function prevMemory() {
+            currentIndex = (currentIndex - 1 + memories.length) % memories.length;
+            showMemory(currentIndex);
+            startSlideshow(); // Reset interval on manual click
+        }
+
+        function nextMemoryManual() {
+            currentIndex = (currentIndex + 1) % memories.length;
+            showMemory(currentIndex);
+            startSlideshow(); // Reset interval on manual click
+        }
+
         function startSlideshow() {
-            stopSlideshow(); // Ensure no multiple intervals are running
-            slideshowInterval = setInterval(nextMemory, 7000); // 7 seconds per slide
+            stopSlideshow();
+            slideshowInterval = setInterval(nextMemory, 7000);
         }
 
         function stopSlideshow() {
             clearInterval(slideshowInterval);
         }
+        
+        prevBtn.addEventListener('click', prevMemory);
+        nextBtn.addEventListener('click', nextMemoryManual);
 
         // --- CONTINUOUS MUSIC SCRIPT ---
         const audio = document.getElementById('background-music');
@@ -206,13 +211,9 @@
         }
 
         function loadMusicState() {
-            // This function will now START this page's music
-            // and respect the mute state from the previous page.
             const paused = localStorage.getItem('musicPaused') === 'true';
-            
             audio.muted = paused;
             updateMuteButton(paused);
-
             if (!paused) {
                  audio.play().catch(e => console.log("Audio needs interaction to play."));
             }
@@ -242,7 +243,6 @@
         // --- Initial Load ---
         showMemory(currentIndex);
         startSlideshow();
-
         window.addEventListener('DOMContentLoaded', loadMusicState);
         window.addEventListener('beforeunload', saveMusicState);
     </script>
