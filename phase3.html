@@ -43,6 +43,22 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+
+        /* Mute Button Style */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body class="text-white flex items-center justify-center min-h-screen p-4">
@@ -61,6 +77,15 @@
         <a href="phase4.html" id="next-page-btn" class="opacity-0 mt-8 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-1000 transform hover:scale-105">
             One Last Surprise... &rarr;
         </a>
+    </div>
+
+    <!-- Audio player and Mute Button -->
+    <audio id="background-music" loop src="music.mp3"></audio>
+    <div id="mute-btn">
+        <!-- Speaker Icon -->
+        <svg id="speaker-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <!-- Mute Icon -->
+        <svg id="mute-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
     </div>
 
     <script>
@@ -89,8 +114,63 @@
         window.onload = () => {
            // Start the animation a moment after the page loads
            setTimeout(typeWriter, 1500);
+           loadMusicState(); // Load the music state
         };
+        
+        // --- CONTINUOUS MUSIC SCRIPT ---
+        const audio = document.getElementById('background-music');
+        const muteBtn = document.getElementById('mute-btn');
+        const speakerIcon = document.getElementById('speaker-icon');
+        const muteIcon = document.getElementById('mute-icon');
+
+        function saveMusicState() {
+            localStorage.setItem('musicTime', audio.currentTime);
+            localStorage.setItem('musicPaused', audio.muted);
+            localStorage.setItem('musicPlaying', !audio.paused);
+        }
+
+        function loadMusicState() {
+            // This function will now RESUME the music from the previous page
+            const time = localStorage.getItem('musicTime');
+            const paused = localStorage.getItem('musicPaused') === 'true';
+            const playing = localStorage.getItem('musicPlaying') === 'true';
+            
+            if (time) {
+                audio.currentTime = parseFloat(time);
+            }
+            
+            audio.muted = paused;
+            updateMuteButton(paused);
+
+            if (playing && !paused) {
+                 audio.play().catch(e => console.log("Audio needs interaction to play."));
+            }
+        }
+        
+        function updateMuteButton(isMuted) {
+             if(isMuted) {
+                speakerIcon.classList.add('hidden');
+                muteIcon.classList.remove('hidden');
+             } else {
+                speakerIcon.classList.remove('hidden');
+                muteIcon.classList.add('hidden');
+             }
+        }
+        
+        muteBtn.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            if(audio.muted) {
+                audio.pause();
+            } else if (localStorage.getItem('musicPlaying') === 'true') { // Only play if it was meant to be playing
+                audio.play().catch(e => console.log("Audio play failed after unmute"));
+            }
+            localStorage.setItem('musicPaused', audio.muted);
+            updateMuteButton(audio.muted);
+        });
+
+        window.addEventListener('beforeunload', saveMusicState);
 
     </script>
 </body>
 </html>
+
