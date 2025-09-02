@@ -58,6 +58,18 @@ The experience flows linearly, with each page leading to the next:
 
 ---
 
+## 🚀 How to Use and Edit This Project
+
+Anyone can **download, customize, and run** this project locally.
+### Download the Project 
+
+```bash
+git clone [https://github.com/01-akm/multiple-birthday-memories.git](https://github.com/01-akm/multiple-birthday-memories.git)
+cd multiple-birthday-memories
+```
+
+---
+
 ## 📝 How to Use & Edit
 
 1. **Change Text Content**
