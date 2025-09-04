@@ -3,7 +3,7 @@
 A **multi-page, animation-rich digital birthday card** built entirely with **HTML, CSS, and JavaScript**.  
 This project is designed as a unique, personal, and unforgettable birthday gift — taking the user on a journey from a spectacular countdown to a nostalgic photo gallery, heartfelt messages, and an interactive finale.
 
-https://npm-akm.github.io/multiple-birthday-memories/
+https://npmakm.github.io/multiple-birthday-memories/
 ---
 
 ## 🚀 How the System Works
